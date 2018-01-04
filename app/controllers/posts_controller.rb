@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update]
+  before_action :require_user, except: [:index, :show]
 
   def index
     @posts = Post.all
@@ -17,6 +18,7 @@ class PostsController < ApplicationController
     @post = Post.new(params.require(:post).permit(:title, :url, :description))
     #not sure why sending the full params to .new creates an error
     if @post.save
+      @post.creator = current_user
       @post.update(post_params)
       flash[:notice] = "Your post was created."
       redirect_to posts_path
