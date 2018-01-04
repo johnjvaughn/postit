@@ -2,15 +2,26 @@
 
 <div class="well">
   <%= form_for @post do |f| %>
-    <%= f.label :title, "Title" %>
-    <%= f.text_field :title %>
-
-    <%= f.label :url, "URL" %>
-    <%= f.text_field :url %>
-
-    <%= f.label :description, "Description" %>
-    <%= f.text_area :description, rows: 5 %>
-    <br>
+    <div class="control-group">
+      <%= f.label :title, "Title" %>
+      <%= f.text_field :title %>
+    </div>
+    <div class="control-group">
+      <%= f.label :url, "URL" %>
+      <%= f.text_field :url %>
+    </div>
+    <div class="control-group">
+      <%= f.label :description, "Description" %>
+      <%= f.text_area :description, rows: 5 %>
+    </div>
+    
+    <div class="control-group">
+      <%= f.label :categories, "Categories" %>    
+      <%= f.collection_check_boxes :category_ids, Category.all, :id, :name do |cb| %>
+        <% cb.label(class: "checkbox inline") { cb.check_box(class: "checkbox") + cb.text } %>
+      <% end %>
+    </div>
+    
     <%= submit_tag "#{@post.new_record? ? 'Create' : 'Update'} Post", class: "btn btn-primary" %>
   <% end %>
 </div>

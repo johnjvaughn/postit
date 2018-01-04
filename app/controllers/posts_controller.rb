@@ -14,8 +14,10 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = Post.new(post_params)
+    @post = Post.new(params.require(:post).permit(:title, :url, :description))
+    #not sure why sending the full params to .new creates an error
     if @post.save
+      @post.update(post_params)
       flash[:notice] = "Your post was created."
       redirect_to posts_path
     else
@@ -38,7 +40,7 @@ class PostsController < ApplicationController
   private
 
   def post_params
-    params.require(:post).permit!
+    params.require(:post).permit(:title, :url, :description, category_ids: [])
   end
 
   def set_post

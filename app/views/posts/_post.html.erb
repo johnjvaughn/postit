@@ -2,11 +2,11 @@
   <div class="span8 well">
     <%= render post.categories %>
 
-    <h4><%= link_to post.title, post_url(post.id) %></h4>
+    <h4><%= link_to post.title, fix_url(post.url), target: "_blank" %></h4>
     <p><%= post.description %></p>
     <p>
       <span class="quiet">posted by</span> <%= post.creator ? post.creator.username : '(none)' %>
-      <small>at <%= post.created_at %></small>
+      <small>at <%= format_datetime(post.created_at) %></small>
     </p>
     <p>
       <%= link_to "#{post.comments.length} comments", post_url(post.id) %>
