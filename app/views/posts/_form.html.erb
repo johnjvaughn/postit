@@ -1,0 +1,16 @@
+<%= render "shared/errors", obj: @post %>
+
+<div class="well">
+  <%= form_for @post do |f| %>
+    <%= f.label :title, "Title" %>
+    <%= f.text_field :title %>
+
+    <%= f.label :url, "URL" %>
+    <%= f.text_field :url %>
+
+    <%= f.label :description, "Description" %>
+    <%= f.text_area :description, rows: 5 %>
+    <br>
+    <%= submit_tag "#{@post.new_record? ? 'Create' : 'Update'} Post", class: "btn btn-primary" %>
+  <% end %>
+</div>

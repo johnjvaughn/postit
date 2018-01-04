@@ -1,0 +1,9 @@
+<div class="span8 well">
+  <p>"<%= comment.body %>"</p>
+  <p>
+    <small>
+      by <%= comment.creator ? comment.creator.username : "(none)" %>
+      at <%= comment.created_at %>
+    </small>
+  </p>
+</div>
