@@ -1,8 +1,31 @@
-<div class="span8 well">
-  <em>"<%= comment.body %>"</em>
-  <br>
-  <span class="quiet">by</span> <%= comment.creator ? comment.creator.username : "(none)" %>
-  <small>
-    at <%= format_datetime(comment.created_at) %>
-  </small>
+<% show_post_link ||= false %>
+
+<div class="row">
+  <div class="span0 well text-center">
+    <% if logged_in? %>
+      <%= link_to vote_post_comment_path(comment.post, comment, vote: true), method: :post do %>
+        <i class="icon-arrow-up"></i>
+      <% end %>
+      <br>
+    <% end %>
+    <%= comment.net_votes %> votes
+    <% if logged_in? %>
+      <br>
+      <%= link_to vote_post_comment_path(comment.post, comment, vote: false), method: :post do %>
+        <i class="icon-arrow-down"></i>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="span8 well">
+    <em>"<%= comment.body %>"</em>
+    <% if show_post_link %>
+      on <%= link_to comment.post.title, post_path(comment.post) %>
+    <% end %>
+    <br>
+    <span class="quiet">by</span> <%= link_to comment.creator.username, user_path(comment.creator) %>
+    <small>
+      at <%= format_datetime(comment.created_at) %>
+    </small>
+  </div>
 </div>

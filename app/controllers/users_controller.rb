@@ -1,11 +1,10 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update]
-
-  def index
-    @users = User.all
-  end
+  before_action :require_same_user, only: [:edit, :update]
 
   def show
+    @comments_class = params[:tab] && params[:tab] == "comments" ? "active" : ""
+    @posts_class = params[:tab] && params[:tab] == "comments" ? "" : "active"
   end
 
   def new
@@ -28,7 +27,7 @@ class UsersController < ApplicationController
 
   def update
     if @user.update(user_params)
-      flash[:notice] = "Your info was updated."
+      flash[:notice] = "Your profile was updated."
       redirect_to root_path
     else
       render :edit
@@ -44,4 +43,12 @@ class UsersController < ApplicationController
   def set_user
     @user = User.find(params[:id])
   end
+  
+  def require_same_user
+    if current_user.id.to_s != params[:id]
+      flash[:error] = "Action not allowed"
+      redirect_to root_path
+    end
+  end
+
 end
