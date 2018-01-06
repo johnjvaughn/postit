@@ -10,11 +10,9 @@ class User < ActiveRecord::Base
   validates :username, presence: true, uniqueness: true
   validates :password, presence: true, on: :create, length: { minimum: 3 }
 
+  include Slugable
+  
   def generate_slug
-    self.slug = self.username.gsub(' ', '-').downcase
-  end
-
-  def to_param
-    self.slug
+    self.slug = slugify(self.username)
   end
 end
