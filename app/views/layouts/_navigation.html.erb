@@ -9,10 +9,10 @@
     Categories <span class="caret"></span>
   <% end %>
   <ul class="dropdown-menu">
-    <% Category.all.each do |category| %>
+    <% Category.all.sort_by{|cat| cat.name}.each do |category| %>
       <li><%= link_to category.name, category_path(category) %></li>
     <% end %>
-    <% if logged_in? %>
+    <% if admin_logged_in? %>
       <li class="divider"></li>
       <li>
         <%= link_to(new_category_path) do %>

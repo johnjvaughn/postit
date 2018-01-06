@@ -5,12 +5,9 @@ module ApplicationHelper
   end
 
   def format_datetime(timestamp)
-    time = timestamp.getlocal
-    if (time.zone.length > 3)
-      timeZone = time.zone.split.map { |word| word[0] }.join
-    else
-      timeZone = time.zone
+    if logged_in? && !current_user.time_zone.blank?
+      timestamp = timestamp.in_time_zone(current_user.time_zone)
     end
-    time.strftime("%m/%d/%Y %l:%M%P #{timeZone}")
+    timestamp.strftime("%m/%d/%Y %l:%M%P %Z")
   end
 end
