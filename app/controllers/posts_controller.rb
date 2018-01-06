@@ -20,8 +20,7 @@ class PostsController < ApplicationController
     if @post.save
       @post.creator = current_user
       @post.update(post_params)
-      flash[:notice] = "Your post was created."
-      redirect_to posts_path
+      redirect_to posts_path, notice: "Your post was created."
     else
       render :new
     end
@@ -32,8 +31,7 @@ class PostsController < ApplicationController
 
   def update
     if @post.update(post_params)
-      flash[:notice] = "Your post was updated."
-      redirect_to posts_path
+      redirect_to posts_path, notice: "Your post was updated."
     else
       render :edit
     end
@@ -41,12 +39,19 @@ class PostsController < ApplicationController
 
   def vote
     vote = Vote.create(voteable: @post, creator: current_user, vote: params[:vote])
-    if vote.valid?
-      flash[:notice] = "Your vote was counted."
-    else
-      flash[:error] = "You can only vote on a post once."
+    respond_to do |format|
+      format.html { 
+        unless vote.valid?
+          flash[:error] = "You can only vote on a post once."
+        end
+        redirect_to :back
+      }
+      format.js {
+        unless vote.valid? 
+          render js: "alert('You can only vote on a post once.')"
+        end
+      }
     end
-    redirect_to :back
   end
 
   private
@@ -56,6 +61,6 @@ class PostsController < ApplicationController
   end
 
   def set_post
-    @post = Post.find(params[:id])
+    @post = Post.find_by(slug: params[:id])
   end
 end

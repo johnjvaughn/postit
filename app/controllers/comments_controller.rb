@@ -6,8 +6,7 @@ class CommentsController < ApplicationController
     @comment = @post.comments.build(comment_params)
     @comment.creator = current_user
     if @comment.save
-      flash[:notice] = "Your comment was added."
-      redirect_to post_path(@post)
+      redirect_to post_path(@post), notice: "Your comment was added."
     else
       @post.reload
       render "posts/show"
@@ -15,14 +14,21 @@ class CommentsController < ApplicationController
   end
 
   def vote
-    comment = Comment.find(params[:id])
-    vote = Vote.create(voteable: comment, creator: current_user, vote: params[:vote])
-    if vote.valid?
-      flash[:notice] = "Your vote was counted."
-    else
-      flash[:error] = "You can only vote on a comment once."
+    @comment = Comment.find(params[:id])
+    vote = Vote.create(voteable: @comment, creator: current_user, vote: params[:vote])
+    respond_to do |format|
+      format.html { 
+        unless vote.valid?
+          flash[:error] = "You can only vote on a comment once."
+        end
+        redirect_to :back
+      }
+      format.js {
+        unless vote.valid? 
+          render js: "alert('You can only vote on a comment once.')"
+        end
+      }
     end
-    redirect_to :back
   end
 
   private

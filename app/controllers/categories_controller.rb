@@ -2,7 +2,7 @@ class CategoriesController < ApplicationController
   before_action :require_user, except: [:index, :show]
 
   def show
-    @category = Category.find(params[:id])
+    @category = Category.find_by(slug: params[:id])
   end
 
   def new
@@ -12,8 +12,7 @@ class CategoriesController < ApplicationController
   def create
     @category = Category.new(category_params)
     if @category.save
-      flash[:notice] = "Category has been created."
-      redirect_to posts_path
+      redirect_to posts_path, notice: "Category has been created."
     else
       render :new
     end

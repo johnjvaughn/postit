@@ -15,8 +15,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       session[:user_id] = @user.id
-      flash[:notice] = "You are registered."
-      redirect_to root_path
+      redirect_to root_path, notice: "You are registered."
     else
       render :new
     end
@@ -27,8 +26,7 @@ class UsersController < ApplicationController
 
   def update
     if @user.update(user_params)
-      flash[:notice] = "Your profile was updated."
-      redirect_to root_path
+      redirect_to root_path, notice: "Your profile was updated."
     else
       render :edit
     end
@@ -41,13 +39,12 @@ class UsersController < ApplicationController
   end
 
   def set_user
-    @user = User.find(params[:id])
+    @user = User.find_by(slug: params[:id])
   end
   
   def require_same_user
-    if current_user.id.to_s != params[:id]
-      flash[:error] = "Action not allowed"
-      redirect_to root_path
+    unless current_user == @user
+      redirect_to root_path, error: "Action not allowed."
     end
   end
 
