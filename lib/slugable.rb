@@ -2,15 +2,16 @@ module Slugable
   extend ActiveSupport::Concern
 
   included do
-    before_save :generate_slug
+    before_save :generate_slug!
+    class_attribute :slug_column
   end
 
   def slugify(text)
     text.to_s.downcase.gsub(/\s+/, '-').gsub(/[^\w\-]/, '').gsub(/\-+/, '-').gsub(/(^-)|(-$)/, '')
   end
 
-  def find_unused_slug(slug_field)
-    slug_base = slugify self[slug_field]
+  def generate_slug!
+    slug_base = slugify self[self.class.slug_column]
     trial_slug = slug_base
     i = 2
     this_id = self.id ? self.id : 0
@@ -18,10 +19,16 @@ module Slugable
       trial_slug = slug_base + "-#{i}"
       i += 1
     end
-    trial_slug
+    self.slug = trial_slug
   end
 
   def to_param
     self.slug
+  end
+
+  module ClassMethods
+    def slugable_column(col_name)
+      self.slug_column = col_name
+    end
   end
 end

@@ -6,7 +6,5 @@ class Category < ActiveRecord::Base
 
   validates :name, presence: true
 
-  def generate_slug
-    self.slug = find_unused_slug :name
-  end
+  slugable_column :name
 end

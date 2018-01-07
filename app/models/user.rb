@@ -11,10 +11,7 @@ class User < ActiveRecord::Base
   validates :password, presence: true, on: :create, length: { minimum: 3 }
 
   after_initialize :set_defaults
-
-  def generate_slug
-    self.slug = find_unused_slug :username
-  end
+  slugable_column :username
 
   def admin?
     self.role && self.role.to_sym == :admin

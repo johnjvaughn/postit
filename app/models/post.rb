@@ -11,7 +11,5 @@ class Post < ActiveRecord::Base
   validates :url, presence: true, uniqueness: true
   validates :description, presence: true
 
-  def generate_slug
-    self.slug = find_unused_slug :title
-  end
+  slugable_column :title
 end
