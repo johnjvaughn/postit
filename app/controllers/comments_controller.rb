@@ -2,7 +2,7 @@ class CommentsController < ApplicationController
   before_action :require_user
 
   def create
-    @post = Post.find(params[:post_id])
+    @post = Post.find_by(slug: params[:post_id])
     @comment = @post.comments.build(comment_params)
     @comment.creator = current_user
     if @comment.save
@@ -18,15 +18,11 @@ class CommentsController < ApplicationController
     vote = Vote.create(voteable: @comment, creator: current_user, vote: params[:vote])
     respond_to do |format|
       format.html { 
-        unless vote.valid?
-          flash[:error] = "You can only vote on a comment once."
-        end
+        flash[:error] = "You can only vote on a comment once." unless vote.valid?
         redirect_to :back
       }
       format.js {
-        unless vote.valid? 
-          render js: "alert('You can only vote on a comment once.')"
-        end
+        render js: "alert('You can only vote on a comment once.')" unless vote.valid? 
       }
     end
   end

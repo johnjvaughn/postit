@@ -1,4 +1,10 @@
-module Voteable 
+module Voteable
+  extend ActiveSupport::Concern
+
+  included do
+    has_many :votes, as: :voteable
+  end
+
   def net_votes
     up_votes - down_votes
   end

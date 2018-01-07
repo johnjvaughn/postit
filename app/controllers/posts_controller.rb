@@ -19,7 +19,7 @@ class PostsController < ApplicationController
     #not sure why sending the full params to .new creates an error
     if @post.save
       @post.creator = current_user
-      @post.update(post_params)
+      @post.update(post_params)  #need this workaround to save the categories (see 3 lines up)
       redirect_to posts_path, notice: "Your post was created."
     else
       render :new
@@ -41,15 +41,11 @@ class PostsController < ApplicationController
     vote = Vote.create(voteable: @post, creator: current_user, vote: params[:vote])
     respond_to do |format|
       format.html { 
-        unless vote.valid?
-          flash[:error] = "You can only vote on a post once."
-        end
+        flash[:error] = "You can only vote on a post once." unless vote.valid?
         redirect_to :back
       }
       format.js {
-        unless vote.valid? 
-          render js: "alert('You can only vote on a post once.')"
-        end
+        render js: "alert('You can only vote on a post once.')" unless vote.valid? 
       }
     end
   end

@@ -1,14 +1,12 @@
 class Category < ActiveRecord::Base
+  include Slugable
+
   has_many :category_posts
   has_many :posts, through: :category_posts
 
-  before_save :generate_slug
-
   validates :name, presence: true
 
-  include Slugable
-
   def generate_slug
-    self.slug = self.name.gsub(' ', '-').downcase
+    self.slug = find_unused_slug :name
   end
 end
