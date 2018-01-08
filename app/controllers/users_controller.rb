@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update]
-  before_action :require_same_user, only: [:edit, :update]
+  before_action :require_same_user_or_admin, only: [:edit, :update]
 
   def show
   end
@@ -40,8 +40,8 @@ class UsersController < ApplicationController
     @user = User.find_by(slug: params[:id])
   end
   
-  def require_same_user
-    unless current_user == @user
+  def require_same_user_or_admin
+    unless current_user == @user || admin_logged_in?
       flash[:error] = "Action not allowed."
       redirect_to root_path
     end

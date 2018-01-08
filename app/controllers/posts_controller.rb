@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :vote]
-  before_action :require_user, except: [:index, :show]
+  before_action :require_user, only: [:new, :create, :edit, :update]
+  before_action :require_creator_or_admin, only: [:edit, :update]
 
   def index
     @posts = Post.all.sort_by{ |post| post.net_votes }.reverse
@@ -31,7 +32,7 @@ class PostsController < ApplicationController
 
   def update
     if @post.update(post_params)
-      redirect_to posts_path, notice: "Your post was updated."
+      redirect_to post_path(@post), notice: "Your post was updated."
     else
       render :edit
     end
@@ -58,5 +59,9 @@ class PostsController < ApplicationController
 
   def set_post
     @post = Post.find_by(slug: params[:id])
+  end
+
+  def require_creator_or_admin
+    access_denied unless current_user == @post.creator || admin_logged_in?
   end
 end
