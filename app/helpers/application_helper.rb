@@ -10,4 +10,10 @@ module ApplicationHelper
     end
     timestamp.strftime("%m/%d/%Y %l:%M%P %Z")
   end
+
+  def pluralizer(arr, obj_name)
+    str = "#{arr.length} #{obj_name}"
+    str += arr.length == 1 ? "" : "s"
+    str
+  end
 end
